@@ -1,7 +1,7 @@
 package com.emarsys
 
-import com.emarsys.utils.DueDateUtils
 import org.joda.time.{DateTime, Duration}
+import com.emarsys.utils.DueDateUtils._
 
 /**
   * Created by andra on 2016. 02. 09..
@@ -15,11 +15,11 @@ object DueDateCalculator {
     * @param remainingTurnAround
     * @return
     */
-  def getToDueDAte(currentDate: DateTime, remainingTurnAround: Duration): DateTime = (currentDate, DueDateUtils.remainingWorkhours(currentDate)) match {
+  def getToDueDAte(currentDate: DateTime, remainingTurnAround: Duration): DateTime = (currentDate, remainingWorkhours(currentDate)) match {
     case (cd, rw) if remainingTurnAround.isShorterThan(rw) =>
       currentDate.plus(remainingTurnAround)
     case (cd, rw) =>
-      getToDueDAte(currentDate.plus(DueDateUtils.shift(cd)).plus(rw), remainingTurnAround.minus(rw))
+      getToDueDAte(currentDate.plus(shift(cd)).plus(rw), remainingTurnAround.minus(rw))
   }
 
   /**
@@ -29,11 +29,11 @@ object DueDateCalculator {
     * @return
     */
   def workHours(start: DateTime): Stream[DateTime] = start #:: {
-    (start, DueDateUtils.remainingWorkhours(start)) match {
+    (start, remainingWorkhours(start)) match {
       case (d, rw) if rw.isLongerThan(Duration.standardHours(1)) =>
         workHours(d.plusHours(1))
       case _ =>
-        workHours(start.plus(DueDateUtils.shift(start)).plusHours(1))
+        workHours(start.plus(shift(start)).plusHours(1))
     }
   }
 
