@@ -1,6 +1,6 @@
 package com.emarsys.utils
 
-import org.joda.time.{Duration, DateTime}
+import org.joda.time.{DateTime, Duration}
 
 /**
   * Created by u95425 on 2016.02.10.
