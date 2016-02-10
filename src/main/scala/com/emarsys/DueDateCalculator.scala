@@ -1,15 +1,12 @@
 package com.emarsys
 
 import com.emarsys.utils.DueDateUtils
-import org.joda.time.{Duration, DateTime, Interval}
-
-import scala.collection.immutable.Stream.#::
+import org.joda.time.{DateTime, Duration}
 
 /**
   * Created by andra on 2016. 02. 09..
   */
 object DueDateCalculator {
-
 
   /**
     * First solution. method is called recursively, and reduce the turnaround time until we can add it to current time before end of workday
