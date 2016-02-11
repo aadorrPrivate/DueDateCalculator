@@ -37,7 +37,6 @@ object DueDateCalculator {
     }
   }
 
-
   /**
     * The requested method shoudl be implemented by solving the coding challenge of Emarsys
     * @param reportDate The exact date when the task has been reported i a reporting system
