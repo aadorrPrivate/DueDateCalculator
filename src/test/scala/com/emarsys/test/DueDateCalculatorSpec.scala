@@ -1,11 +1,13 @@
 package com.emarsys.test
 
 import com.emarsys.DueDateCalculator
-import com.sun.javaws.exceptions.InvalidArgumentException
-import org.joda.time.{Duration, Interval, DateTime}
-import org.scalatest._
+import org.joda.time.{DateTime, Duration, Interval}
+import org.scalatest.*
+import org.scalatest.flatspec.AnyFlatSpec
+import matchers._
 
-class DueDateCalculatorSpec extends FlatSpec with Matchers {
+
+class DueDateCalculatorSpec extends AnyFlatSpec with should.Matchers {
 
   "A DueDateCalculator" should "return the same time if turnaround time is 0" in {
     val reportingDate = new DateTime(2016, 2, 9, 12, 0, 0, 0)
@@ -43,21 +45,21 @@ class DueDateCalculatorSpec extends FlatSpec with Matchers {
     DueDateCalculator.calculateDueDate(reportingDate, Duration.standardHours(1)) should be (dueDate)
   }
 
-  it should "throw InvalidArgumentException if the provided date is on a workday but out of working hours (edge conditions)" in {
+  it should "throw IllegalArgumentException if the provided date is on a workday but out of working hours (edge conditions)" in {
     val reportingDate = new DateTime(2016, 2, 9, 17, 0, 0, 0)
     a [IllegalArgumentException] should be thrownBy {
       DueDateCalculator.calculateDueDate(reportingDate, Duration.standardHours(1))
     }
   }
 
-  it should "throw InvalidArgumentException if the provided date is on a workday but out of working hours" in {
+  it should "throw IllegalArgumentException if the provided date is on a workday but out of working hours" in {
     val reportingDate = new DateTime(2016, 2, 9, 18, 0, 0, 0)
     a [IllegalArgumentException] should be thrownBy {
       DueDateCalculator.calculateDueDate(reportingDate, Duration.standardHours(1))
     }
   }
 
-  it should "throw InvalidArgumentException if the provided date is in the weekend" in {
+  it should "throw IllegalArgumentException if the provided date is in the weekend" in {
     val reportingDate = new DateTime(2016, 2, 7, 15, 0, 0, 0)
     a [IllegalArgumentException] should be thrownBy {
       DueDateCalculator.calculateDueDate(reportingDate, Duration.standardHours(1))

@@ -1,10 +1,12 @@
 package com.emarsys
 
 import org.joda.time.{DateTime, Duration}
-import com.emarsys.utils.DueDateUtils._
+import com.emarsys.utils.DueDateUtils.*
+
+import scala.annotation.tailrec
 
 /**
-  * Created by andra on 2016. 02. 09..
+  * Created by andra on 2016. 02. 09.
   */
 object DueDateCalculator {
 
@@ -15,7 +17,8 @@ object DueDateCalculator {
     * @param remainingTurnAround
     * @return
     */
-  def getToDueDAte(currentDate: DateTime, remainingTurnAround: Duration): DateTime = (currentDate, remainingWorkhours(currentDate)) match {
+  @tailrec
+  private def getToDueDAte(currentDate: DateTime, remainingTurnAround: Duration): DateTime = (currentDate, remainingWorkhours(currentDate)) match {
     case (cd, rw) if remainingTurnAround.isShorterThan(rw) =>
       currentDate.plus(remainingTurnAround)
     case (cd, rw) =>
@@ -28,7 +31,7 @@ object DueDateCalculator {
     * @param start
     * @return
     */
-  def workHours(start: DateTime): Stream[DateTime] = start #:: {
+  private def workHours(start: DateTime): LazyList[DateTime] = start #:: {
     (start, remainingWorkhours(start)) match {
       case (d, rw) if rw.isLongerThan(Duration.standardHours(1)) =>
         workHours(d.plusHours(1))
@@ -38,21 +41,21 @@ object DueDateCalculator {
   }
 
   /**
-    * The requested method shoudl be implemented by solving the coding challenge of Emarsys
-    * @param reportDate The exact date when the task has been reported i a reporting system
+    * The requested method should be implemented by solving the coding challenge of Emarsys
+    * @param reportDate The exact date when the task has been reported in a reporting system
     * @param turnAround The turnaround time is given in working hours
     * @return
     */
   def calculateDueDate(reportDate: DateTime, turnAround: Duration): DateTime = reportDate match {
-    case d if d.getDayOfWeek() > 5 =>
+    case d if d.getDayOfWeek > 5 =>
       throw new IllegalArgumentException("reportDate should be on weekdays between 9am to 5pm.")
 
     case d if d.getHourOfDay < 9 || d.getHourOfDay >= 17 =>
       throw new IllegalArgumentException("reportDate should be on weekdays between 9am to 5pm.")
 
-    case validReportDate => {
+    case validReportDate =>
       /**
-        * Frist solution
+        * First solution
         */
       //getToDueDAte(reportDate, turnAround)
 
@@ -61,7 +64,6 @@ object DueDateCalculator {
         * I stick to use the turnaround time as a duration to make room for further modifications
         */
       workHours(reportDate)(turnAround.getStandardHours.toInt)
-    }
 
   }
 }
