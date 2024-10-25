@@ -1,22 +1,34 @@
 package com.emarsys.utils
 
-import org.joda.time.{DateTime, Duration}
+import java.time.{Duration, LocalDateTime}
 
 /**
-  * Created by u95425 on 2016.02.10.
-  */
+ * DueDateUtils object containing utility methods to calculate due dates based on reporting date and turnaround time.
+ */
 object DueDateUtils {
 
-  private val dayShift = Duration.standardHours(16)
-  private val weekendShift = Duration.standardDays(2)
+  private val dayShift = Duration.ofHours(16)
+  private val weekendShift = Duration.ofDays(2)
 
-  def remainingWorkhours(currentDateTime: DateTime): Duration = {
-    val endOfWorkDay = currentDateTime.withHourOfDay(17).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
-    return new Duration(currentDateTime, endOfWorkDay)
+  /**
+   * Calculate the remaining workhours from the current date until the end of the workday
+   * @param currentDateTime
+   * @return
+   */
+  def remainingWorkhours(currentDateTime: LocalDateTime): Duration = {
+    val endOfWorkDay = currentDateTime.withHour(17).withMinute(0).withSecond(0).withNano(0)
+    Duration.between(currentDateTime, endOfWorkDay)
   }
 
-  def shift (currentDate: DateTime) : Duration = currentDate match {
-    case cd if(currentDate.plusDays(1).getDayOfWeek > 5 ) => weekendShift.plus(dayShift)
+  /**
+   * Calculate the shift based on the current date
+   * At the end of working hours we shift to the next day - to 9am
+   * At the end of the week we shift to the next week - to Monday 9am
+   * @param currentDate
+   * @return
+   */
+  def shift (currentDate: LocalDateTime) : Duration = currentDate match {
+    case cd if currentDate.plusDays(1).getDayOfWeek.getValue > 5  => weekendShift.plus(dayShift)
     case _ => dayShift
   }
 }
