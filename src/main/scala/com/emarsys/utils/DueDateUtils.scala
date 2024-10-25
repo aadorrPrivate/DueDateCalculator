@@ -12,7 +12,7 @@ object DueDateUtils {
 
   /**
    * Calculate the remaining workhours from the current date until the end of the workday
-   * @param currentDateTime
+   * @param currentDateTime The current date time we want to kkow the remaining workhours till the end of the workday
    * @return
    */
   def remainingWorkhours(currentDateTime: LocalDateTime): Duration = {
@@ -24,7 +24,7 @@ object DueDateUtils {
    * Calculate the shift based on the current date
    * At the end of working hours we shift to the next day - to 9am
    * At the end of the week we shift to the next week - to Monday 9am
-   * @param currentDate
+   * @param currentDate The current date we want to calculate the shift for
    * @return
    */
   def shift (currentDate: LocalDateTime) : Duration = currentDate match {
